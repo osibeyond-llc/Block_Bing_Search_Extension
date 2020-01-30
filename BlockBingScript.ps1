@@ -76,5 +76,8 @@ New-GPLink -Name "Computer: Block Bing Search Extension" -Target $TARGET.Disting
 Get-GPO -Name "Computer: Block Bing Search Extension"
 
 #cleanup
+Write-Host "Cleanup: Removing unecessary files..."
 Remove-Item -Recurse C:\$env:HOMEPATH\Desktop\ExtractedADMX
 Remove-Item -Recurse C:\$env:HOMEPATH\Desktop\admintemplates_x64_4966-1000_en-us.exe
+
+Write-Host "Process Complete. Please check GPMC to verify that everything created sucessfully."
