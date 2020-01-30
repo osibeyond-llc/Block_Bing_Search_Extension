@@ -44,7 +44,7 @@ New-Item -ItemType "Directory" -Path "C:\$env:HOMEPATH\Desktop\ExtractedADMX";
 
 #download .exe for new admx templates
 Write-Host "Extracting..."
-Invoke-WebRequest https://download.microsoft.com/download/2/E/E/2EEEC938-C014-419D-BB4B-D184871450F1/admintemplates_x64_4966-1000_en-us.exe -OutFile C:\$env:HOMEPATH\Desktop\admintemplates_x64_4966-1000_en-us1.exe;
+Invoke-WebRequest https://download.microsoft.com/download/2/E/E/2EEEC938-C014-419D-BB4B-D184871450F1/admintemplates_x64_4966-1000_en-us.exe -OutFile C:\$env:HOMEPATH\Desktop\admintemplates_x64_4966-1000_en-us.exe;
 Start-Sleep 10;
 #extract new templates to new directory
 Write-Host "Starting extraction..."
