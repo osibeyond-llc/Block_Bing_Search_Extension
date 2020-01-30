@@ -49,7 +49,7 @@ Invoke-WebRequest https://download.microsoft.com/download/2/E/E/2EEEC938-C014-41
 #extract new templates to new directory
 Write-Host "Starting extraction..."
 Start-Process -FilePath "C:\$env:HOMEPATH\Desktop\admintemplates_x64_4966-1000_en-us.exe" -ArgumentList "/extract:C:\$env:HOMEPATH\Desktop\ExtractedADMX", "/quiet";
-Start-Sleep 10
+Start-Sleep 18
 #copy admx files to SYSVOL location
 
 Write-Host "Moving extracted .admx files"
