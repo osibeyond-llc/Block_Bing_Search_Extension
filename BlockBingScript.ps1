@@ -39,25 +39,32 @@ else{
 }
 
 
-
+Write-Host "Creating extractio folder"
 New-Item -ItemType "Directory" -Path "C:\$env:HOMEPATH\Desktop\ExtractedADMX";
 
 #download .exe for new admx templates
-wget https://download.microsoft.com/download/2/E/E/2EEEC938-C014-419D-BB4B-D184871450F1/admintemplates_x64_4966-1000_en-us.exe -OutFile C:\$env:HOMEPATH\Desktop\admintemplates_x64_4966-1000_en-us.exe;
-
+Write-Host "Extracting..."
+Invoke-WebRequest https://download.microsoft.com/download/2/E/E/2EEEC938-C014-419D-BB4B-D184871450F1/admintemplates_x64_4966-1000_en-us.exe -OutFile C:\$env:HOMEPATH\Desktop\admintemplates_x64_4966-1000_en-us1.exe;
+Start-Sleep 10;
 #extract new templates to new directory
+Write-Host "Starting extraction..."
 Start-Process -FilePath "C:\$env:HOMEPATH\Desktop\admintemplates_x64_4966-1000_en-us.exe" -ArgumentList "/extract:C:\$env:HOMEPATH\Desktop\ExtractedADMX", "/quiet";
 
 #copy admx files to SYSVOL location
+
+Write-Host "Moving extracted .admx files"
 Copy-Item -Path "C:\$env:HOMEPATH\Desktop\ExtractedADMX\admx\*.admx" -Destination "C:\Windows\SYSVOL\sysvol\$env:USERDNSDOMAIN\Policies\PolicyDefinitions";
 
 #copy en_us file to SYSVOL location
+Write-Host "moving extracted en_us folder"
 Copy-Item -Path "C:\$env:HOMEPATH\Desktop\ExtractedADMX\admx\en-us" -Destination "C:\Windows\SYSVOL\sysvol\$env:USERDNSDOMAIN\Policies\PolicyDefinitions" -Recurse -Force
 
 #Make the new GPO
+Write-Host "Create GPO"
 New-GPO -Name "Computer: Block Bing Search Extension" -Server $FSMOserver;
 
 #Set GPO and assign it to the domain
+Write-Host "Creating GPO values"
 Set-GPRegistryValue -Name "Computer: Block Bing Search Extension" -Key "HKLM\SOFTWARE\Policies\Microsoft\office\16.0\common\officeupdate" -ValueName preventbinginstall -Type DWord -Value 1
 
 #Link GPO
@@ -65,3 +72,9 @@ $TARGET = Get-ADDomain | Select-Object DistinguishedName
 
 New-GPLink -Name "Computer: Block Bing Search Extension" -Target $TARGET.DistinguishedName -LinkEnabled Yes
 
+#verify GPO:
+Get-GPO -Name "Computer: Block Bing Search Extension"
+
+#cleanup
+Remove-Item -Recurse C:\$env:HOMEPATH\Desktop\ExtractedADMX
+Remove-Item -Recurse C:\$env:HOMEPATH\Desktop\admintemplates_x64_4966-1000_en-us.exe
