@@ -27,7 +27,12 @@ if(!$CentralStore){
     Write-Host "Central Store created."
 }
 $FSMOserver = Get-ADDomainController -Filter * | Select-Object Name, Domain, Forest, OperationMasterRoles | Where-Object {$_.OperationMasterRoles} | Select-Object Name;
-Write-Host "FSMO server is $FSMOserver. Are you on the FSMO Server?  (Y/n)"
+$FSMOserver = $FSMOserver.DistinguishedName;
+#Write-Host "FSMO server is $FSMOserver. You are on $env:COMPUTERNAME. Are you on the FSMO Server?  (Y/n)"
+if($env:COMPUTERNAME -ne $FSMOserver){
+    exit;
+}
+
 
 $ans = 'n'
 $ans = Read-Host -Prompt ">> "
