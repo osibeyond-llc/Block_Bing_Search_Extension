@@ -2,6 +2,9 @@
 #check for FSMO hold server, if this server is not FSMO hold, exit with error
 #check if GPMC pulls from central store.
 
+#written by Benjamin Cornwell of OSIbeyond, LLC
+#January 2020
+
 
 #$DOMAIN = Read-Host -Prompt 'input domain name. (ex: BJC.local)';
 $domain = $env:USERDNSDOMAIN
