@@ -11,6 +11,18 @@ $domain = $env:USERDNSDOMAIN
 Write-Host "Is it the same as:  $domain ?";
 
 
+#Check if this is the FSMO server
+$FSMOserver = Get-ADDomainController -Filter * | Select-Object Name, Domain, Forest, OperationMasterRoles | Where-Object {$_.OperationMasterRoles} | Select-Object Name;
+$FSMOserver = $FSMOserver.Name;
+#Write-Host "FSMO server is $FSMOserver. You are on $env:COMPUTERNAME. Are you on the FSMO Server?  (Y/n)"
+if($env:COMPUTERNAME -ne $FSMOserver){
+    Write-Host "Do this on the other server. Exiting...";
+    exit;
+}
+else{
+    Write-Host "`n You are on the correct server.";
+    Write-Host "`n Continuing...";
+}
 $CentralStore = $False;
 if(Test-Path C:\Windows\SYSVOL\sysvol\$domain\Policies\PolicyDefinitions){
     Write-Host "Central Store exists. Continuing...";
@@ -26,18 +38,6 @@ if(!$CentralStore){
     Start-Sleep 5;
     Write-Host "Central Store created."
 }
-$FSMOserver = Get-ADDomainController -Filter * | Select-Object Name, Domain, Forest, OperationMasterRoles | Where-Object {$_.OperationMasterRoles} | Select-Object Name;
-$FSMOserver = $FSMOserver.Name;
-#Write-Host "FSMO server is $FSMOserver. You are on $env:COMPUTERNAME. Are you on the FSMO Server?  (Y/n)"
-if($env:COMPUTERNAME -ne $FSMOserver){
-    Write-Host "Do this on the other server. Exiting...";
-    exit;
-}
-else{
-    Write-Host "`n You are on the correct server.";
-    Write-Host "`n Continuing...";
-}
-
 
 Write-Host "Creating extractio folder"
 New-Item -ItemType "Directory" -Path "C:\$env:HOMEPATH\Desktop\ExtractedADMX";
